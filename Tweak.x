@@ -3,6 +3,9 @@
 #include <net/if.h>
 #include <net/if_var.h>
 
+@interface SBHomeScreenViewController : UIViewController
+@end
+
 static UIWindow *win;
 static UILabel *lbl;
 static uint32_t lastIn = 0, lastOut = 0;
@@ -35,23 +38,28 @@ static void tick(void) {
     lbl.text = [NSString stringWithFormat:@"↓%@ ↑%@", fmt(di), fmt(dout)];
 }
 
-%hook SpringBoard
-- (void)applicationDidFinishLaunching:(id)app {
+static void setupWindow(UIWindowScene *scene) {
+    if (win) return;
+    CGFloat w = scene.screen.bounds.size.width;
+    win = [[UIWindow alloc] initWithWindowScene:scene];
+    win.frame = CGRectMake(w - 160, 50, 150, 30);
+    win.windowLevel = 10000;
+    win.userInteractionEnabled = NO;
+    win.backgroundColor = UIColor.redColor;
+    lbl = [[UILabel alloc] initWithFrame:win.bounds];
+    lbl.font = [UIFont monospacedDigitSystemFontOfSize:12 weight:UIFontWeightSemibold];
+    lbl.textColor = UIColor.whiteColor;
+    lbl.textAlignment = NSTextAlignmentCenter;
+    [win addSubview:lbl];
+    win.hidden = NO;
+    readBytes(&lastIn, &lastOut);
+    [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer *t){ tick(); }];
+}
+
+%hook SBHomeScreenViewController
+- (void)viewDidAppear:(BOOL)animated {
     %orig;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        CGFloat w = UIScreen.mainScreen.bounds.size.width;
-        win = [[UIWindow alloc] initWithFrame:CGRectMake(w - 110, 24, 105, 14)];
-        win.windowLevel = 10000;
-        win.userInteractionEnabled = NO;
-        win.backgroundColor = UIColor.clearColor;
-        lbl = [[UILabel alloc] initWithFrame:win.bounds];
-        lbl.font = [UIFont monospacedDigitSystemFontOfSize:9 weight:UIFontWeightSemibold];
-        lbl.textColor = UIColor.whiteColor;
-        lbl.textAlignment = NSTextAlignmentRight;
-        [win addSubview:lbl];
-        win.hidden = NO;
-        readBytes(&lastIn, &lastOut);
-        [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer *t){ tick(); }];
-    });
+    UIWindowScene *s = self.view.window.windowScene;
+    if (s) setupWindow(s);
 }
 %end
