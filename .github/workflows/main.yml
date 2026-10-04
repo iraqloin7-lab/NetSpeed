@@ -21,14 +21,20 @@ jobs:
       run: |
         git clone --recursive https://github.com/theos/theos.git $HOME/theos
         git clone https://github.com/theos/sdks.git $HOME/theos/sdks || true
-        git clone https://github.com/roothide/theos-roothide.git $HOME/theos/vendor/roothide || true
+        git clone https://github.com/roothide/theos-roothide.git /tmp/theos-roothide || true
         
-        # نسخ مخططات وتعديلات RootHide مباشرة إلى مسار الـ makefiles في Theos
-        if [ -d "$HOME/theos/vendor/roothide/makefiles" ]; then
-          cp -R $HOME/theos/vendor/roothide/makefiles/* $HOME/theos/makefiles/
+        # نسخ ملفات الـ roothide إلى الأماكن الصحيحة في Theos
+        mkdir -p $HOME/theos/makefiles/package
+        mkdir -p $HOME/theos/makefiles/targets
+        
+        if [ -d "/tmp/theos-roothide/makefiles" ]; then
+          cp -R /tmp/theos-roothide/makefiles/* $HOME/theos/makefiles/
         fi
-        if [ -d "$HOME/theos/vendor/roothide/targets" ]; then
-          cp -R $HOME/theos/vendor/roothide/targets/* $HOME/theos/makefiles/targets/
+        if [ -d "/tmp/theos-roothide/package" ]; then
+          cp -R /tmp/theos-roothide/package/* $HOME/theos/makefiles/package/
+        fi
+        if [ -d "/tmp/theos-roothide/targets" ]; then
+          cp -R /tmp/theos-roothide/targets/* $HOME/theos/makefiles/targets/
         fi
 
     - name: Build Package
