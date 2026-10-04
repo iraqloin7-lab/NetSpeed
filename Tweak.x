@@ -59,7 +59,6 @@ static void tick(void) {
 static void setupWindow(UIWindowScene *scene) {
     if (win) return;
     CGFloat w = scene.screen.bounds.size.width;
-    CGFloat top = MAX(scene.statusBarManager.statusBarFrame.size.height, 44);
         CGFloat W = 100, H = 13;
 
     win = [[UIWindow alloc] initWithWindowScene:scene];
