@@ -1,0 +1,9 @@
+Package: com.iraqloin.netspeed
+Name: NetSpeed
+Depends: mobilesubstrate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: NetSpeed Tweak
+Maintainer: iraqloin7-lab
+Author: iraqloin7-lab
+Section: Tweaks
