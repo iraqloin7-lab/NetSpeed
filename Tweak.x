@@ -41,7 +41,7 @@ static void tick(void) {
     uint32_t di = i - lastIn, dout = o - lastOut;
     lastIn = i; lastOut = o;
 
-    UIFont *f = [UIFont monospacedDigitSystemFontOfSize:9.5 weight:UIFontWeightSemibold];
+        UIFont *f = [UIFont monospacedDigitSystemFontOfSize:8.5 weight:UIFontWeightSemibold];
     UIColor *green = [UIColor colorWithRed:0.20 green:0.84 blue:0.42 alpha:1];
     UIColor *orange = [UIColor colorWithRed:1.0 green:0.62 blue:0.04 alpha:1];
 
@@ -60,10 +60,10 @@ static void setupWindow(UIWindowScene *scene) {
     if (win) return;
     CGFloat w = scene.screen.bounds.size.width;
     CGFloat top = MAX(scene.statusBarManager.statusBarFrame.size.height, 44);
-    CGFloat W = 112, H = 20;
+        CGFloat W = 100, H = 13;
 
     win = [[UIWindow alloc] initWithWindowScene:scene];
-    win.frame = CGRectMake(w - W - 12, top + 2, W, H);
+        win.frame = CGRectMake((w - W) / 2, 31, W, H);
     win.windowLevel = 10000;
     win.userInteractionEnabled = NO;
     win.backgroundColor = UIColor.clearColor;
