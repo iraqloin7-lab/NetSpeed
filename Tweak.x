@@ -30,27 +30,58 @@ static NSString *fmt(uint32_t b) {
     return [NSString stringWithFormat:@"%uK", b / 1024];
 }
 
+static void addPart(NSMutableAttributedString *s, NSString *t, UIColor *c, UIFont *f) {
+    [s appendAttributedString:[[NSAttributedString alloc] initWithString:t
+        attributes:@{NSForegroundColorAttributeName: c, NSFontAttributeName: f}]];
+}
+
 static void tick(void) {
     uint32_t i, o;
     readBytes(&i, &o);
     uint32_t di = i - lastIn, dout = o - lastOut;
     lastIn = i; lastOut = o;
-    lbl.text = [NSString stringWithFormat:@"↓%@ ↑%@", fmt(di), fmt(dout)];
+
+    UIFont *f = [UIFont monospacedDigitSystemFontOfSize:9.5 weight:UIFontWeightSemibold];
+    UIColor *green = [UIColor colorWithRed:0.20 green:0.84 blue:0.42 alpha:1];
+    UIColor *orange = [UIColor colorWithRed:1.0 green:0.62 blue:0.04 alpha:1];
+
+    NSMutableAttributedString *s = [NSMutableAttributedString new];
+    addPart(s, @"↓", green, f);
+    addPart(s, [NSString stringWithFormat:@" %@  ", fmt(di)], UIColor.whiteColor, f);
+    addPart(s, @"↑", orange, f);
+    addPart(s, [NSString stringWithFormat:@" %@", fmt(dout)], UIColor.whiteColor, f);
+    lbl.attributedText = s;
+
+    CGFloat a = (di + dout) < 1024 ? 0.55 : 1.0;
+    [UIView animateWithDuration:0.3 animations:^{ win.alpha = a; }];
 }
 
 static void setupWindow(UIWindowScene *scene) {
     if (win) return;
     CGFloat w = scene.screen.bounds.size.width;
+    CGFloat top = MAX(scene.statusBarManager.statusBarFrame.size.height, 44);
+    CGFloat W = 112, H = 20;
+
     win = [[UIWindow alloc] initWithWindowScene:scene];
-    win.frame = CGRectMake(w - 160, 50, 150, 30);
+    win.frame = CGRectMake(w - W - 12, top + 2, W, H);
     win.windowLevel = 10000;
     win.userInteractionEnabled = NO;
-    win.backgroundColor = UIColor.redColor;
-    lbl = [[UILabel alloc] initWithFrame:win.bounds];
-    lbl.font = [UIFont monospacedDigitSystemFontOfSize:12 weight:UIFontWeightSemibold];
-    lbl.textColor = UIColor.whiteColor;
+    win.backgroundColor = UIColor.clearColor;
+
+    UIVisualEffectView *blur = [[UIVisualEffectView alloc]
+        initWithEffect:[UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemThinMaterialDark]];
+    blur.frame = win.bounds;
+    blur.clipsToBounds = YES;
+    blur.layer.cornerRadius = H / 2;
+    blur.layer.cornerCurve = kCACornerCurveContinuous;
+    blur.layer.borderWidth = 0.5;
+    blur.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.18].CGColor;
+    [win addSubview:blur];
+
+    lbl = [[UILabel alloc] initWithFrame:blur.bounds];
     lbl.textAlignment = NSTextAlignmentCenter;
-    [win addSubview:lbl];
+    [blur.contentView addSubview:lbl];
+
     win.hidden = NO;
     readBytes(&lastIn, &lastOut);
     [NSTimer scheduledTimerWithTimeInterval:1 repeats:YES block:^(NSTimer *t){ tick(); }];
