@@ -15,23 +15,21 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        brew install ldid dpkg
+        brew install ldid dpkg curl
 
-    - name: Setup Theos & RootHide SDK
+    - name: Setup Theos
       run: |
-        export THEOS=$HOME/theos
-        git clone --recursive https://github.com/theos/theos.git $THEOS
-        
-        # تحميل SDK
-        curl -LO https://github.com/theos/sdks/archive/master.zip
-        unzip master.zip
-        mv sdks-master/* $THEOS/sdks/
-        rm -rf sdks-master master.zip
-        
-        # إضافة دعم RootHide إلى Theos
-        git clone https://github.com/roothide/theos-roothide.git $THEOS/vendor/roothide || true
-        if [ -d "$THEOS/vendor/roothide/makefiles" ]; then
-          cp -r $THEOS/vendor/roothide/makefiles/* $THEOS/makefiles/
+        git clone --recursive https://github.com/theos/theos.git $HOME/theos
+
+    - name: Setup iOS SDKs
+      run: |
+        git clone https://github.com/theos/sdks.git $HOME/theos/sdks
+
+    - name: Setup RootHide Support
+      run: |
+        git clone https://github.com/roothide/theos-roothide.git $HOME/theos/vendor/roothide || true
+        if [ -d "$HOME/theos/vendor/roothide/makefiles" ]; then
+          cp -r $HOME/theos/vendor/roothide/makefiles/* $HOME/theos/makefiles/
         fi
 
     - name: Build Package
