@@ -8,4 +8,4 @@ TWEAK_NAME = NetSpeed
 NetSpeed_FILES = Tweak.x
 NetSpeed_CFLAGS = -fobjc-arc
 
-include $(THEOS_MAKEFILE_PATH)/tweak.mk
+include $(THEOS)/makefiles/tweak.mk
