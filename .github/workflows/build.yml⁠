@@ -32,3 +32,4 @@ jobs:
       with:
         name: NetSpeed-DEB
         path: packages/*.deb
+
