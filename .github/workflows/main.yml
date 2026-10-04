@@ -13,6 +13,10 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
+    - name: Install Dependencies
+      run: |
+        brew install ldid dpkg
+
     - name: Setup Theos
       run: |
         export THEOS=$HOME/theos
