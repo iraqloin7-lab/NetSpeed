@@ -1,0 +1,9 @@
+Package: com.example.netspeed
+Name: NetSpeed
+Version: 1.0.0
+Architecture: iphoneos-arm64
+Description: Network speed indicator
+Maintainer: me
+Author: me
+Section: Tweaks
+Depends: mobilesubstrate
