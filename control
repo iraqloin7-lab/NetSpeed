@@ -1,9 +1,0 @@
-Package: com.yourname.netspeed
-Name: NetSpeed Indicator
-Depends: mobilesubstrate
-Version: 1.0.0
-Architecture: iphoneos-arm64
-Description: Net Speed for iOS
-Maintainer: Developer
-Author: Developer
-Section: Tweaks
