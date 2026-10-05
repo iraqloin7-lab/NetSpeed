@@ -6,4 +6,5 @@ include $(THEOS)/makefiles/common.mk
 TWEAK_NAME = NetSpeed
 NetSpeed_FILES = Tweak.x
 NetSpeed_CFLAGS = -fobjc-arc
+NetSpeed_FRAMEWORKS = UIKit IOKit
 include $(THEOS_MAKE_PATH)/tweak.mk
